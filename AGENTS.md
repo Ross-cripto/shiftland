@@ -14,6 +14,7 @@ Shiftland is a native workspace bar and settings app for macOS. This repository 
 | The public website, player, or build instructions | [web/index.html](web/index.html), [web/site.css](web/site.css), and [web/site.js](web/site.js) |
 | The workspace demo video | [film/index.html](film/index.html) and [film/compositions/](film/compositions/) |
 | How the website is deployed | [.github/workflows/pages.yml](.github/workflows/pages.yml) |
+| Release builds, signing, notarization, and the files attached to a GitHub release | [.github/workflows/release.yml](.github/workflows/release.yml) and [macos/scripts/package-app.sh](macos/scripts/package-app.sh) |
 
 Read [PRODUCT.md](PRODUCT.md) for the app's purpose and [DESIGN.md](DESIGN.md) for the identity and workspace bar. [README.md](README.md) is the contributor's starting point.
 
@@ -29,7 +30,7 @@ swift test --package-path macos -j 2 --filter WorkspaceBarTests
 open -n "$PWD/.build/Shiftland.app" --args --preview --settings
 ```
 
-`scripts/build-app.sh` calls the macOS build script and writes the bundle to `.build/Shiftland.app`. Preview runs alongside the installed bar with saving and workspace-zero shortcut registration disabled. Use the preview for visual work. Test settings changes on a temporary configuration file. `SettingsStore` owns the backup and stale-file checks around edits to `settings.toml`.
+`scripts/build-app.sh` calls the macOS build script and writes the bundle to `.build/Shiftland.app`. The `SHIFTLAND_*` variables documented at the top of that script switch it to a universal release build with a version and a Developer ID signature. `scripts/package-app.sh` turns the bundle into the DMG, zip, and checksums that a release publishes, and notarizes them when given an App Store Connect API key. Pushing a `v*` tag runs both in GitHub Actions and publishes the release. Preview runs alongside the installed bar with saving and workspace-zero shortcut registration disabled. Use the preview for visual work. Test settings changes on a temporary configuration file. `SettingsStore` owns the backup and stale-file checks around edits to `settings.toml`.
 
 The installed OmniWM and its enabled IPC are needed for a live check. Run `".build/Shiftland.app/Contents/MacOS/Shiftland" --diagnose` to check the connection and display assignments.
 
