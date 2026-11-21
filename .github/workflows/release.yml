@@ -1,8 +1,11 @@
 name: macOS app
 
-# Every change to the app is tested and packaged. Pushing a tag such as v0.2.0
-# also publishes a GitHub release with Shiftland.dmg, Shiftland.zip, and their
-# checksums. Tags with a suffix, such as v0.2.0-beta.1, become prereleases.
+# Every change to the app is tested and packaged. A GitHub release with
+# Shiftland.dmg, Shiftland.zip, and their checksums is published when:
+#   - a push to main carries a CFBundleShortVersionString in Info.plist that has
+#     no v<version> tag yet. The workflow creates the tag with the release.
+#   - a tag such as v0.2.0 is pushed.
+# Versions with a suffix, such as v0.2.0-beta.1, become prereleases.
 #
 # Releases are signed with Developer ID and notarized by Apple when all five
 # APPLE_* repository secrets are set. README.md explains how to create them.
@@ -38,6 +41,8 @@ jobs:
     env:
       DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
     outputs:
+      release: ${{ steps.version.outputs.release }}
+      tag: ${{ steps.version.outputs.tag }}
       prerelease: ${{ steps.version.outputs.prerelease }}
       notarized: ${{ steps.signing.outputs.enabled }}
     steps:
@@ -48,19 +53,33 @@ jobs:
       - name: Read version
         id: version
         run: |
+          release=false
           if [[ "$GITHUB_REF_TYPE" == tag ]]; then
-            if [[ ! "$GITHUB_REF_NAME" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)(-[0-9A-Za-z.-]+)?$ ]]; then
-              echo "::error::Release tags look like v1.2.3 or v1.2.3-beta.1, not $GITHUB_REF_NAME."
-              exit 1
-            fi
-            version="${BASH_REMATCH[1]}"
-            if [[ -n "${BASH_REMATCH[2]}" ]]; then prerelease=true; else prerelease=false; fi
+            tag="$GITHUB_REF_NAME"
+            release=true
           else
-            version="$(/usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' macos/Resources/Info.plist)"
-            prerelease=false
+            tag="v$(/usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' macos/Resources/Info.plist)"
+            if [[ "$GITHUB_EVENT_NAME" == push && "$GITHUB_REF" == refs/heads/main ]]; then
+              status=0
+              git ls-remote --exit-code --tags origin "refs/tags/$tag" > /dev/null || status=$?
+              case "$status" in
+                0) echo "$tag is already released, so this build is not published." ;;
+                2) release=true ;;
+                *) echo "::error::Could not check whether $tag exists."; exit 1 ;;
+              esac
+            fi
           fi
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
+          if [[ ! "$tag" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Versions look like 1.2.3 or 1.2.3-beta.1, and tags like v1.2.3, not $tag."
+            exit 1
+          fi
+          if [[ -n "${BASH_REMATCH[2]}" ]]; then prerelease=true; else prerelease=false; fi
+          {
+            echo "release=$release"
+            echo "tag=$tag"
+            echo "version=${BASH_REMATCH[1]}"
+            echo "prerelease=$prerelease"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Check signing secrets
         id: signing
@@ -70,6 +89,7 @@ jobs:
           APPLE_NOTARY_KEY: ${{ secrets.APPLE_NOTARY_KEY }}
           APPLE_NOTARY_KEY_ID: ${{ secrets.APPLE_NOTARY_KEY_ID }}
           APPLE_NOTARY_ISSUER_ID: ${{ secrets.APPLE_NOTARY_ISSUER_ID }}
+          RELEASE: ${{ steps.version.outputs.release }}
         run: |
           configured=0
           for name in APPLE_CERTIFICATE_P12 APPLE_CERTIFICATE_PASSWORD APPLE_NOTARY_KEY APPLE_NOTARY_KEY_ID APPLE_NOTARY_ISSUER_ID; do
@@ -79,12 +99,12 @@ jobs:
             echo "::error::Set all five APPLE_* signing secrets, or none of them."
             exit 1
           fi
-          # Only tagged releases are signed and notarized.
-          if ((configured == 5)) && [[ "$GITHUB_REF_TYPE" == tag ]]; then
+          # Only published releases are signed and notarized.
+          if ((configured == 5)) && [[ "$RELEASE" == true ]]; then
             echo "enabled=true" >> "$GITHUB_OUTPUT"
           else
             echo "enabled=false" >> "$GITHUB_OUTPUT"
-            if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+            if [[ "$RELEASE" == true ]]; then
               echo "::warning::This release is signed ad hoc because the APPLE_* secrets are not set."
             fi
           fi
@@ -168,7 +188,7 @@ jobs:
   release:
     name: Publish GitHub release
     needs: build
-    if: github.ref_type == 'tag'
+    if: needs.build.outputs.release == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -194,7 +214,7 @@ jobs:
       - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ github.ref_name }}
+          TAG: ${{ needs.build.outputs.tag }}
           PRERELEASE: ${{ needs.build.outputs.prerelease }}
           NOTARIZED: ${{ needs.build.outputs.notarized }}
         run: |
@@ -223,13 +243,15 @@ jobs:
             echo
           } > notes.md
 
-          prerelease_flag=()
-          if [[ "$PRERELEASE" == true ]]; then prerelease_flag=(--prerelease); fi
+          # A pushed tag already exists. Otherwise the release creates the tag
+          # on the commit this run built.
+          options=(--verify-tag)
+          if [[ "$GITHUB_REF_TYPE" != tag ]]; then options=(--target "$GITHUB_SHA"); fi
+          if [[ "$PRERELEASE" == true ]]; then options+=(--prerelease); fi
           gh release create "$TAG" \
             dist/Shiftland.dmg dist/Shiftland.zip dist/SHA256SUMS.txt \
             --repo "$GITHUB_REPOSITORY" \
             --title "Shiftland ${TAG#v}" \
             --notes-file notes.md \
             --generate-notes \
-            --verify-tag \
-            "${prerelease_flag[@]}"
+            "${options[@]}"

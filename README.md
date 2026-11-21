@@ -51,14 +51,16 @@ To work on the website, serve `web/` with `python3 -m http.server 8000 --bind 12
 
 ## Publish a release
 
-The [macOS app workflow](.github/workflows/release.yml) tests and packages Shiftland for every pull request that changes the app and every push to `main`. Download that build from the workflow run's **Artifacts**. To publish a release, push a version tag:
+The [macOS app workflow](.github/workflows/release.yml) tests and packages Shiftland for every pull request that changes the app and every push to `main`. Download that build from the workflow run's **Artifacts**.
+
+To publish a release, change `CFBundleShortVersionString` in [macos/Resources/Info.plist](macos/Resources/Info.plist) to the new version, such as `0.2.0`, and merge the change into `main`. When `main` has a version that doesn't have a tag yet, the workflow creates the `v0.2.0` tag along with the release. You can also push the tag yourself:
 
 ```sh
 git tag v0.2.0
 git push origin v0.2.0
 ```
 
-The workflow writes the tag's version into the app, builds one universal binary for Apple silicon and Intel, and publishes `Shiftland.dmg`, `Shiftland.zip`, and `SHA256SUMS.txt` in a GitHub release with generated notes and a build provenance attestation. A tag with a suffix, such as `v0.2.0-beta.1`, becomes a prerelease and doesn't replace the latest release.
+The workflow writes the release's version into the app, builds one universal binary for Apple silicon and Intel, and publishes `Shiftland.dmg`, `Shiftland.zip`, and `SHA256SUMS.txt` in a GitHub release with generated notes and a build provenance attestation. A version with a suffix, such as `0.2.0-beta.1`, becomes a prerelease and doesn't replace the latest release.
 
 To build the same files locally:
 
@@ -81,7 +83,7 @@ Without Apple credentials, releases are signed ad hoc, and macOS asks people to 
 | `APPLE_NOTARY_KEY_ID` | The ID of that key. |
 | `APPLE_NOTARY_ISSUER_ID` | The issuer ID shown above the list of keys. |
 
-When all five secrets are set, tagged releases are signed with the hardened runtime, notarized, and stapled, so they open without a warning. The workflow stops if only some of them are set.
+When all five secrets are set, releases are signed with the hardened runtime, notarized, and stapled, so they open without a warning. The workflow stops if only some of them are set.
 
 ## License
 
