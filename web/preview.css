@@ -1,0 +1,246 @@
+.demo {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  color: #f8eefb;
+  background: #21172e;
+  border: 1px solid #5c4a69;
+  border-radius: .9rem;
+  box-shadow: 0 .85rem 1.75rem #35223c2b;
+}
+
+.demo-menu {
+  display: grid;
+  place-items: center;
+  padding: .55rem .65rem;
+  background: #150e20;
+  border-bottom: 1px solid #4a3856;
+}
+
+.demo-controls {
+  display: flex;
+  gap: .16rem;
+  padding: .16rem;
+  border: 1px solid #475065;
+  border-radius: .56rem;
+  background: #202631;
+}
+
+.demo-controls button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .36rem;
+  min-width: 3.2rem;
+  min-height: 2.75rem;
+  padding-inline: .55rem;
+  border: 1px solid transparent;
+  border-radius: .35rem;
+  color: #d8e2ef;
+  background: transparent;
+  font-weight: 720;
+  cursor: pointer;
+}
+
+.demo-controls button:not([aria-pressed="true"]):hover { background: #344158; }
+.demo-controls button[aria-pressed="true"] { background: #8bb7e8; color: #101722; }
+.demo-controls button:focus-visible { outline-color: #f2caeb; outline-offset: 2px; }
+
+.demo-apps {
+  width: .9rem;
+  height: .9rem;
+  border: 1px solid #ffffff6b;
+  border-radius: .24rem;
+  background: linear-gradient(90deg, var(--first-app) 50%, var(--second-app) 50%);
+}
+
+.demo-apps-code { --first-app: #a545a1; --second-app: #423d71; }
+.demo-apps-research { --first-app: #3472b8; --second-app: #d2a459; }
+.demo-apps-planning { --first-app: #ca8637; --second-app: #ad406e; }
+
+.demo-desktop {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
+  align-items: stretch;
+  gap: .65rem;
+  min-height: 15.25rem;
+  padding: .85rem;
+  background: linear-gradient(155deg, #281731, #392747);
+}
+
+.demo[data-space="2"] .demo-desktop { grid-template-columns: minmax(0, 1.38fr) minmax(0, .82fr); }
+.demo[data-space="3"] .demo-desktop { grid-template-columns: minmax(0, .9fr) minmax(0, 1.16fr); }
+.demo-fallback { grid-column: 1 / -1; align-self: center; text-align: center; }
+
+.demo-window {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--window-ink, #f9edf9);
+  background: var(--window-paper, #281d37);
+  border: 1px solid var(--window-edge, #624b70);
+  border-radius: .52rem;
+}
+
+.demo-window[data-kind="editor"] { --window-accent: #d3a5e8; --window-chrome: #342543; }
+.demo-window[data-kind="terminal"] { --window-accent: #9edcb6; --window-paper: #191a2c; --window-chrome: #23253a; --window-edge: #4e526b; }
+.demo-window[data-kind="browser"] { --window-accent: #9bbaff; --window-chrome: #303354; --window-paper: #232744; --window-edge: #5a6285; }
+.demo-window[data-kind="reference"] { --window-accent: #e5be89; --window-chrome: #3b3146; }
+.demo-window[data-kind="notes"] { --window-accent: #9c5814; --window-paper: #f4e8d7; --window-chrome: #e9d7bb; --window-ink: #392934; --window-edge: #a38282; }
+.demo-window[data-kind="calendar"] { --window-accent: #9b3b62; --window-paper: #f9edf2; --window-chrome: #f0dce8; --window-ink: #46263d; --window-edge: #aa809d; }
+
+.window-title {
+  display: flex;
+  gap: .45rem;
+  align-items: center;
+  padding: .58rem .68rem;
+  background: var(--window-chrome, #342543);
+  border-bottom: 1px solid color-mix(in srgb, var(--window-edge, #624b70) 75%, transparent);
+}
+
+.window-title h3 {
+  overflow: hidden;
+  margin: 0;
+  font: 690 .82rem/1.2 var(--body);
+  letter-spacing: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.window-icon {
+  width: .56rem;
+  height: .56rem;
+  flex: none;
+  border-radius: .17rem;
+  background: var(--window-accent);
+}
+
+.window-tab {
+  padding: .38rem .68rem;
+  border-bottom: 1px solid #ffffff24;
+  color: #e2cee9;
+  font: .68rem/1.2 ui-monospace, Menlo, monospace;
+  overflow-wrap: anywhere;
+}
+
+.window-code,
+.window-document {
+  margin: 0;
+  padding: .72rem .68rem;
+  overflow-wrap: anywhere;
+}
+
+.window-code {
+  font: .73rem/1.58 ui-monospace, Menlo, monospace;
+  white-space: pre-wrap;
+}
+
+.code-keyword { color: #f5abd9; }
+.code-annotation { color: #c7abfb; }
+.prompt { color: #a9e4bc; }
+.terminal-output { color: #c3bdd8; }
+
+.window-document {
+  display: grid;
+  gap: .52rem;
+  font-size: .74rem;
+  line-height: 1.4;
+}
+
+.window-document h4 {
+  margin: 0;
+  font: 760 1rem/1.15 var(--display);
+  letter-spacing: -.015em;
+}
+
+.window-document > code {
+  justify-self: start;
+  padding: .16rem .36rem;
+  border-radius: .24rem;
+  color: #e0eeff;
+  background: #374263;
+  font-size: .67rem;
+}
+
+.window-document dl { margin: 0; }
+.window-document dd { margin: .14rem 0 .56rem; }
+.window-document dt { font-weight: 680; }
+
+.notes-list {
+  display: grid;
+  gap: .48rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.notes-list li {
+  display: grid;
+  grid-template-columns: .65rem 1fr;
+  align-items: baseline;
+  gap: .38rem;
+}
+
+.notes-list li::before {
+  content: "";
+  width: .57rem;
+  height: .57rem;
+  border: 1px solid #8d6866;
+  border-radius: .13rem;
+}
+
+.notes-list .note-done::before {
+  border-color: #456c49;
+  background: #619061;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: .12rem;
+  min-width: 0;
+  text-align: center;
+  font-size: .65rem;
+}
+
+.calendar-days dt { color: #72566a; }
+.calendar-days dd { margin: .18rem 0 .26rem; font-weight: 760; }
+.calendar-today { border-radius: .3rem; background: #e9c9df; }
+
+.calendar-event {
+  display: flex;
+  align-items: center;
+  gap: .3rem .42rem;
+  flex-wrap: wrap;
+  padding: .31rem .4rem;
+  border-radius: .28rem;
+  background: #f0cfdf;
+}
+
+.calendar-event-review { background: #e8d9f1; }
+.calendar-event span { font-variant-numeric: tabular-nums; font-size: .65rem; }
+
+.demo figcaption {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .25rem .65rem;
+  padding: .6rem .86rem;
+  border-top: 1px solid #4a3856;
+  color: #f1e4f3;
+  background: #1a1227;
+  font-size: .8rem;
+}
+
+.demo-caption { color: #d7bedc; }
+
+@media (max-width: 480px) {
+  .demo-desktop { gap: .45rem; padding: .52rem; min-height: 13.8rem; }
+  .window-title { padding-inline: .46rem; }
+  .window-code, .window-tab, .window-document { padding-inline: .45rem; }
+  .notes-list li { gap: .22rem; }
+  .demo figcaption { padding-inline: .6rem; }
+}
+
+@media (max-width: 350px) {
+  .demo-desktop, .demo[data-space] .demo-desktop { grid-template-columns: minmax(0, 1fr); }
+}

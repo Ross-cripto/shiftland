@@ -15,7 +15,9 @@
   <link rel="icon" href="assets/favicon.png" type="image/png" sizes="64x64">
   <link rel="preload" href="assets/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="preview.css">
   <script defer src="site.js"></script>
+  <script defer src="preview.js"></script>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -52,28 +54,107 @@
       <section class="shell preview-section" id="preview" aria-labelledby="preview-title">
         <div class="preview-copy">
           <h2 id="preview-title">Your spaces,<br>at a glance.</h2>
-          <p>The bar follows your display and shows the apps in each workspace. Select a number to see an example of switching spaces.</p>
+          <p>The bar follows your display and shows the apps in each workspace. Choose a number to try a coding session, a research space, or a planning desk. Use the arrow keys when the picker is focused.</p>
         </div>
         <figure class="demo" data-space="1">
           <div class="demo-menu">
             <div class="demo-controls" role="group" aria-label="Example workspaces">
-              <button type="button" data-space="1" data-first="Editor" data-second="Terminal" aria-pressed="true" aria-label="Workspace 1" disabled>1</button>
-              <button type="button" data-space="2" data-first="Browser" data-second="Reference" aria-pressed="false" aria-label="Workspace 2" disabled>2</button>
-              <button type="button" data-space="3" data-first="Notes" data-second="Calendar" aria-pressed="false" aria-label="Workspace 3" disabled>3</button>
+              <button type="button" data-space="1" aria-pressed="true" aria-controls="demo-desktop" aria-label="Workspace 1, Editor and Terminal" disabled>
+                <span>1</span><span class="demo-apps demo-apps-code" aria-hidden="true"></span>
+              </button>
+              <button type="button" data-space="2" aria-pressed="false" aria-controls="demo-desktop" aria-label="Workspace 2, Browser and Reference" disabled>
+                <span>2</span><span class="demo-apps demo-apps-research" aria-hidden="true"></span>
+              </button>
+              <button type="button" data-space="3" aria-pressed="false" aria-controls="demo-desktop" aria-label="Workspace 3, Notes and Calendar" disabled>
+                <span>3</span><span class="demo-apps demo-apps-planning" aria-hidden="true"></span>
+              </button>
             </div>
           </div>
-          <div class="demo-layout" aria-hidden="true">
-            <div class="demo-window">
-              <div class="window-title"><span></span><b data-first-title>Editor</b></div>
-              <div class="window-lines"><i></i><i></i><i></i><i></i><i></i></div>
-            </div>
-            <div class="demo-window">
-              <div class="window-title"><span></span><b data-second-title>Terminal</b></div>
-              <div class="window-lines"><i></i><i></i><i></i></div>
-            </div>
+          <div class="demo-desktop" id="demo-desktop" aria-label="Example windows">
+            <p class="demo-fallback">Workspace 1 · Editor and Terminal</p>
           </div>
-          <figcaption><span>Illustrated preview</span><span aria-live="polite" data-demo-status>Workspace 1 · Editor and Terminal</span></figcaption>
+          <figcaption>
+            <span data-demo-status aria-live="polite">Workspace 1 · Editor and Terminal</span>
+            <span class="demo-caption">Interactive illustration</span>
+          </figcaption>
         </figure>
+
+        <template id="demo-window">
+          <article class="demo-window">
+            <header class="window-title">
+              <span class="window-icon" aria-hidden="true"></span>
+              <h3 data-window-title></h3>
+            </header>
+            <div class="window-content"></div>
+          </article>
+        </template>
+
+        <template id="demo-editor">
+          <div class="window-tab">WorkspacePanel.swift</div>
+          <pre class="window-code"><code><span class="code-keyword">import</span> AppKit
+<span class="code-keyword">import</span> SwiftUI
+
+<span class="code-annotation">@MainActor</span>
+<span class="code-keyword">final class</span> WorkspacePanel {
+  <span class="code-keyword">let</span> window: NSPanel
+}</code></pre>
+        </template>
+
+        <template id="demo-terminal">
+          <pre class="window-code"><code><span class="prompt">$</span> ./scripts/build-app.sh
+<span class="terminal-output">Building Shiftland…</span>
+<span class="terminal-output">Build complete.</span>
+
+<span class="prompt">$</span> open .build/Shiftland.app</code></pre>
+        </template>
+
+        <template id="demo-browser">
+          <div class="window-tab">omniwm.app / reference</div>
+          <div class="window-document">
+            <h4>Workspace subscriptions</h4>
+            <p>Subscribe to workspace events to follow changes as you switch spaces.</p>
+            <code>workspace-bar</code>
+            <code>display-changed</code>
+          </div>
+        </template>
+
+        <template id="demo-reference">
+          <div class="window-document">
+            <h4>Command reference</h4>
+            <dl>
+              <dt><code>workspace focus-name</code></dt>
+              <dd>Switch to a workspace.</dd>
+              <dt><code>query displays</code></dt>
+              <dd>View connected displays.</dd>
+            </dl>
+          </div>
+        </template>
+
+        <template id="demo-notes">
+          <div class="window-document">
+            <h4>Launch checklist</h4>
+            <ul class="notes-list">
+              <li class="note-done">Check both displays</li>
+              <li>Try keyboard shortcuts</li>
+              <li>Write release notes</li>
+            </ul>
+          </div>
+        </template>
+
+        <template id="demo-calendar">
+          <div class="window-document">
+            <h4>November 2026</h4>
+            <dl class="calendar-days" aria-label="Week of November 23">
+              <div><dt>Mon</dt><dd>23</dd></div>
+              <div><dt>Tue</dt><dd>24</dd></div>
+              <div class="calendar-today"><dt>Wed</dt><dd>25</dd></div>
+              <div><dt>Thu</dt><dd>26</dd></div>
+              <div><dt>Fri</dt><dd>27</dd></div>
+            </dl>
+            <div class="calendar-event"><span>10:00</span> <strong>Focus block</strong></div>
+            <div class="calendar-event calendar-event-review"><span>14:00</span> <strong>Review</strong></div>
+          </div>
+        </template>
       </section>
 
       <section class="shell details" aria-label="Features">
