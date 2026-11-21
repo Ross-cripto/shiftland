@@ -1,0 +1,26 @@
+<template>
+  <div id="root" data-composition-id="end-card" data-width="1920" data-height="1080">
+    <div class="end-surface">
+      <div class="lockup">
+        <img class="hare" src="assets/shiftland.webp" width="244" height="244" alt="">
+        <div class="lockup-copy">
+          <h1>Shiftland</h1>
+          <p>Your workspaces, one keystroke away.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (() => {
+      const timeline = gsap.timeline({ paused: true });
+      timeline.fromTo(".end-surface", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0);
+      timeline.fromTo(".hare", { x: -58, opacity: 0 }, {
+        x: 0, opacity: 1, duration: 0.52, ease: "power3.out"
+      }, 0.1);
+      timeline.fromTo(".lockup-copy", { y: 24, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 0.46, ease: "power2.out"
+      }, 0.21);
+      window.__timelines["end-card"] = timeline;
+    })();
+  </script>
+</template>

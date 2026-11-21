@@ -15,3 +15,23 @@ if (navigator.clipboard) {
     }
   });
 }
+
+const demo = document.querySelector("#workspace-demo");
+const playButton = document.querySelector(".demo-play");
+
+function showVideoControls() {
+  demo.controls = true;
+  if (document.activeElement === playButton) demo.focus();
+  playButton.hidden = true;
+}
+
+demo.controls = false;
+playButton.hidden = false;
+playButton.addEventListener("click", async () => {
+  try {
+    await demo.play();
+  } catch {
+    showVideoControls();
+  }
+});
+demo.addEventListener("play", showVideoControls, { once: true });

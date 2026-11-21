@@ -18,6 +18,8 @@ Put the workspace switcher and the settings for workspaces, displays and shortcu
 
 The product name is Shiftland.
 
+Public copy leads with what Shiftland lets people do with their workspaces. Explain OmniWM in the setup and technical documentation.
+
 ## Operating context
 
 The pilot uses macOS 15.5 and the installed OmniWM 0.5.1. The original SketchyBar pilot is the reference for the workspace bar's visuals, placement and interaction.

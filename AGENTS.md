@@ -1,6 +1,6 @@
 # Working on Shiftland
 
-Shiftland is a native macOS menu bar and settings app powered by OmniWM. This repository also contains its static website.
+Shiftland is a native workspace bar and settings app for macOS. This repository also contains its static website.
 
 ## Find the right code
 
@@ -11,7 +11,8 @@ Shiftland is a native macOS menu bar and settings app powered by OmniWM. This re
 | OmniWM event decoding or commands | [macos/Sources/WorkspaceBar/OmniWM.swift](macos/Sources/WorkspaceBar/OmniWM.swift) |
 | The settings window or how edits are saved to OmniWM | [WorkspaceSettingsView.swift](macos/Sources/WorkspaceBar/WorkspaceSettingsView.swift) and [SettingsStore.swift](macos/Sources/WorkspaceBar/SettingsStore.swift) |
 | The app's artwork or menu bar glyph | [macos/Resources/Brand/](macos/Resources/Brand/) and [ShiftlandStatusIcon.swift](macos/Sources/WorkspaceBar/ShiftlandStatusIcon.swift) |
-| The public website or interactive workspace illustration | [web/index.html](web/index.html), [web/site.css](web/site.css), [web/preview.css](web/preview.css), and [web/preview.js](web/preview.js) |
+| The public website, player, or build instructions | [web/index.html](web/index.html), [web/site.css](web/site.css), and [web/site.js](web/site.js) |
+| The workspace demo video | [film/index.html](film/index.html) and [film/compositions/](film/compositions/) |
 | How the website is deployed | [.github/workflows/pages.yml](.github/workflows/pages.yml) |
 
 Read [PRODUCT.md](PRODUCT.md) for the app's purpose and [DESIGN.md](DESIGN.md) for the identity and workspace bar. [README.md](README.md) is the contributor's starting point.
@@ -34,14 +35,18 @@ The installed OmniWM and its enabled IPC are needed for a live check. Run `".bui
 
 ## Website
 
-`web/` is the site root. `index.html` contains the copy and example window content. `site.css` styles the page, `preview.css` styles the illustration, `preview.js` switches workspaces, and `site.js` handles copying build commands. Serve it from the repository root:
+`web/` is the site root. `index.html` contains the copy and player, `site.css` styles the page, and `site.js` handles starting the demo and copying build commands. Run the local server from the repository root.
 
 ```sh
 python3 -m http.server 8000 --bind 127.0.0.1 --directory web
 ```
 
-Open `http://127.0.0.1:8000/`. Test the workspace selector with pointer and keyboard, check the copy button, and inspect at least one narrow and one wide layout. Keep asset paths relative so the site works within the `/shiftland/` URL prefix. GitHub Pages serves the contents of `web/` through the Pages workflow.
+Open `http://127.0.0.1:8000/`. Test video playback with pointer and keyboard, check the copy button, and inspect a mobile and an ultrawide viewport. Keep asset paths relative so the site works within the `/shiftland/` URL prefix. GitHub Pages serves the contents of `web/` through the Pages workflow.
+
+## Demo film
+
+`film/` is the editable HyperFrames project. Its bar states come from the native SwiftUI workspace buttons. The surrounding windows show a staged Git branch and task-list review. Use [film/README.md](film/README.md) to preview a change and export the MP4 and poster that the site serves.
 
 ## Before committing
 
-Run the focused checks for the part you changed. Keep personal OmniWM settings, generated builds, screenshots of real workspaces, and local workflow files outside the commit. Use synthetic application names in the website preview so it can be published alongside the code.
+Run the focused checks for the part you changed. Keep personal OmniWM settings, generated app builds, screenshots of real workspaces, and local workflow files outside the commit. Keep the web-ready demo and its poster in `web/assets/`.

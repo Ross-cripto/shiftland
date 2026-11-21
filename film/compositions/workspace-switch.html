@@ -1,0 +1,201 @@
+<template>
+  <div id="root" data-composition-id="workspace-switch" data-width="1920" data-height="1080">
+    <div class="set">
+      <div class="desktop" data-application="code" data-layout-allow-overlap>
+        <div class="wallpaper"></div>
+        <div class="desktop-menu">
+          <div class="system-menu" aria-hidden="true" data-layout-ignore>
+            <span class="menu-symbol apple-menu"></span>
+            <strong class="active-app code-menu">Code</strong>
+            <strong class="active-app safari-menu">Safari</strong>
+            <strong class="active-app notes-menu">Notes</strong>
+            <span>File</span><span>Edit</span><span>View</span>
+          </div>
+          <img id="bar-code" class="bar" src="assets/workspace-1.png" alt="Shiftland with workspace 1 active" width="765" height="54">
+          <img id="bar-review" class="bar" src="assets/workspace-2.png" alt="Shiftland with workspace 2 active" width="765" height="54">
+          <img id="bar-moved" class="bar" src="assets/workspace-2-moved.png" alt="Workspace 2 active and Safari now in workspace 0" width="765" height="54">
+          <img id="bar-preview" class="bar" src="assets/workspace-0.png" alt="Shiftland with workspace 0 active" width="765" height="54">
+          <img id="bar-return" class="bar" src="assets/workspace-1-moved.png" alt="Shiftland back in workspace 1" width="765" height="54">
+          <div class="system-status" aria-hidden="true" data-layout-ignore>
+            <span class="menu-symbol wifi"></span>
+            <span class="menu-symbol battery"></span>
+            <span>9:41 AM</span>
+          </div>
+        </div>
+        <div class="desk code-desk">
+          <section class="window editor">
+            <header class="window-title"><span class="traffic"></span>tasks</header>
+            <div class="editor-columns">
+              <aside class="files">
+                <strong>Explorer</strong>
+                <span class="project-folder">tasks</span>
+                <span class="file-folder">assets</span>
+                <span class="file-folder">styles</span>
+                <span class="selected-file">index.html</span>
+              </aside>
+              <div class="editor-document">
+                <div class="editor-tabs"><span class="tab">index.html</span></div>
+                <div class="editor-content">
+                  <pre class="editor-gutter" aria-hidden="true" data-layout-ignore>1
+2
+3
+4</pre>
+                  <pre><code><strong>&lt;main&gt;</strong>
+  &lt;h2&gt;<span>No tasks yet</span>&lt;/h2&gt;
+  &lt;button&gt;<span>Add task</span>&lt;/button&gt;
+<strong>&lt;/main&gt;</strong></code></pre>
+                </div>
+              </div>
+            </div>
+            <footer class="editor-status"><span>fix/empty-state</span><span>HTML</span></footer>
+          </section>
+          <section class="window terminal">
+            <header class="window-title"><span class="traffic"></span>tasks — zsh</header>
+            <pre class="terminal-status"><code><span>~/tasks</span>
+<strong>%</strong> git status -sb
+
+<span>## fix/empty-state</span>
+ M index.html
+
+<strong>%</strong> <span class="terminal-cursor"></span></code></pre>
+            <pre class="terminal-summary"><code><span>~/tasks</span>
+<strong>%</strong> git diff --numstat
+
+ <strong>4</strong>    0    index.html
+
+<strong>%</strong> <span class="terminal-cursor"></span></code></pre>
+          </section>
+        </div>
+        <div class="desk review-desk" data-layout="split">
+          <section class="window browser">
+            <header class="window-title">
+              <span class="traffic"></span>
+              <span class="browser-arrows" aria-hidden="true"></span>
+              <span class="browser-address">localhost:8000</span>
+            </header>
+            <div class="browser-page">
+              <div class="tasks-header"><strong>Tasks</strong><span>Today</span></div>
+              <div class="tasks-empty">
+                <h2>No tasks yet</h2>
+                <span class="tasks-button">Add task</span>
+              </div>
+            </div>
+          </section>
+          <section class="window notes">
+            <header class="window-title"><span class="traffic"></span>Notes</header>
+            <div class="notes-columns">
+              <aside class="notes-list">
+                <strong>On My Mac</strong>
+                <span>Task list</span>
+              </aside>
+              <div class="note-body">
+                <h2>Empty state QA</h2>
+                <ul>
+                  <li class="done">Open an empty list</li>
+                  <li>Try adding a task</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div class="dock" aria-hidden="true">
+          <span class="dock-icon finder"></span>
+          <span class="dock-icon code"></span>
+          <span class="dock-icon terminal-icon"></span>
+          <span class="dock-icon safari"></span>
+          <span class="dock-icon notes-icon"></span>
+        </div>
+      </div>
+      <div class="legend" data-layout-allow-overlap>
+        <p class="workspace-label label-code">Workspace 1 <span>Edit the task list</span></p>
+        <p class="workspace-label label-review">Workspace 2 <span>Review the preview</span></p>
+        <p class="workspace-label label-preview">Workspace 0 <span>Focus the browser</span></p>
+        <p class="opening-branch">Branch <code>fix/empty-state</code></p>
+
+        <div class="shortcut shortcut-review">
+          <span>Switch workspace</span><kbd>⌥</kbd><kbd>2</kbd>
+        </div>
+        <div class="shortcut shortcut-move">
+          <span>Move window to 0</span><kbd>⌥</kbd><kbd>⇧</kbd><kbd>0</kbd>
+        </div>
+        <div class="shortcut shortcut-preview">
+          <span>Go to workspace 0</span><kbd>⌥</kbd><kbd>0</kbd>
+        </div>
+        <div class="shortcut shortcut-return">
+          <span>Back to the editor</span><kbd>⌥</kbd><kbd>1</kbd>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (() => {
+      const timeline = gsap.timeline({ paused: true });
+      const reviewTime = 3.5;
+      const moveTime = 7.5;
+      const previewTime = 11.5;
+      const returnTime = 15.5;
+
+      function pressShortcut(current, previous, time) {
+        const entranceTime = time - 0.68;
+        if (previous) timeline.to(previous, { opacity: 0, duration: 0.18 }, entranceTime);
+        timeline.fromTo(current, { y: 14, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 0.26, ease: "power3.out"
+        }, entranceTime + 0.12);
+        timeline.to(current + " kbd", {
+          scale: 0.87, backgroundColor: "#8bb7e8", color: "#101722",
+          duration: 0.10, repeat: 1, yoyo: true, ease: "power2.inOut"
+        }, time - 0.10);
+      }
+
+      function showDesk(entering, exiting, time, direction = 1) {
+        timeline.to(exiting, { x: -direction * 110, opacity: 0, duration: 0.23, ease: "power2.in" }, time);
+        timeline.fromTo(entering, { x: direction * 120, opacity: 0 }, {
+          x: 0, opacity: 1, duration: 0.46, ease: "power3.out", immediateRender: false
+        }, time + 0.08);
+      }
+
+      function showState(bar, label, previousBar, previousLabel, time, application) {
+        timeline.set(previousBar, { opacity: 0 }, time);
+        timeline.set(bar, { opacity: 1 }, time);
+        timeline.set(".desktop", { attr: { "data-application": application } }, time);
+        if (label !== previousLabel) {
+          timeline.set(previousLabel, { opacity: 0 }, time + 0.12);
+          timeline.set(label, { opacity: 1 }, time + 0.12);
+        }
+      }
+
+      timeline.fromTo(".set", { scale: 0.98 }, { scale: 1.015, duration: reviewTime, ease: "sine.inOut" }, 0);
+
+      timeline.to(".opening-branch", { opacity: 0, duration: 0.18 }, reviewTime - 0.68);
+      pressShortcut(".shortcut-review", null, reviewTime);
+      showState("#bar-review", ".label-review", "#bar-code", ".label-code", reviewTime, "safari");
+      showDesk(".review-desk", ".code-desk", reviewTime);
+      timeline.to(".set", { scale: 0.985, duration: moveTime - reviewTime, ease: "sine.inOut" }, reviewTime);
+
+      pressShortcut(".shortcut-move", ".shortcut-review", moveTime);
+      timeline.to(".browser", { borderColor: "#8bb7e8", duration: 0.19 }, moveTime - 0.26);
+      showState("#bar-moved", ".label-review", "#bar-review", ".label-review", moveTime, "notes");
+      timeline.to(".browser", { x: -820, opacity: 0, duration: 0.38, ease: "power3.in" }, moveTime);
+      timeline.set(".review-desk", { attr: { "data-layout": "notes" } }, moveTime + 0.38);
+      timeline.to(".set", { scale: 1.02, duration: previewTime - moveTime, ease: "sine.inOut" }, moveTime);
+
+      pressShortcut(".shortcut-preview", ".shortcut-move", previewTime);
+      showState("#bar-preview", ".label-preview", "#bar-moved", ".label-review", previewTime, "safari");
+      timeline.to(".notes", { x: -120, opacity: 0, duration: 0.23, ease: "power2.in" }, previewTime);
+      timeline.set(".review-desk", { attr: { "data-layout": "browser" } }, previewTime + 0.2);
+      timeline.fromTo(".browser", { x: 120, opacity: 0 }, {
+        x: 0, opacity: 1, duration: 0.46, ease: "power3.out", immediateRender: false
+      }, previewTime + 0.21);
+      timeline.to(".set", { scale: 0.985, duration: returnTime - previewTime, ease: "sine.inOut" }, previewTime);
+
+      pressShortcut(".shortcut-return", ".shortcut-preview", returnTime);
+      showState("#bar-return", ".label-code", "#bar-preview", ".label-preview", returnTime, "code");
+      timeline.set(".terminal-status", { opacity: 0 }, returnTime);
+      timeline.set(".terminal-summary", { opacity: 1 }, returnTime);
+      showDesk(".code-desk", ".review-desk", returnTime, -1);
+      timeline.to(".set", { scale: 1.015, duration: 2.65, ease: "sine.inOut" }, returnTime);
+
+      window.__timelines["workspace-switch"] = timeline;
+    })();
+  </script>
+</template>

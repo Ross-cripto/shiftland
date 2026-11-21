@@ -2,7 +2,7 @@
 
 <img src="macos/Resources/Brand/AppIcon.png" width="96" height="96" alt="Shiftland's leaping hare">
 
-Shiftland puts your OmniWM workspaces, displays, and keyboard shortcuts in a native macOS menu bar. See which apps are in each space, click to switch, and edit your setup from one window.
+Shiftland is a native workspace bar for macOS. See which apps are open in each space, switch with a click or shortcut, and organize your work across displays.
 
 [Project website](https://ross-cripto.github.io/shiftland/) · [Report an issue](https://github.com/Ross-cripto/shiftland/issues/new)
 
@@ -12,6 +12,7 @@ Shiftland puts your OmniWM workspaces, displays, and keyboard shortcuts in a nat
 | --- | --- |
 | [macos/](macos/) | Swift package, native app, artwork, and tests |
 | [web/](web/) | Public website source and assets. Start at [web/index.html](web/index.html) |
+| [film/](film/) | HyperFrames source for the website's workspace demo |
 | [scripts/](scripts/) | Root build entry point |
 | [AGENTS.md](AGENTS.md) | Code map, architecture, and development commands |
 

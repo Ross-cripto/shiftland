@@ -1,0 +1,69 @@
+@font-face {
+  font-family: Bricolage;
+  src: url("assets/fonts/bricolage-grotesque.woff2") format("woff2");
+  font-weight: 400 800;
+}
+
+:root {
+  --cream: #fff3dc;
+  --plum: #25132f;
+  --ink: #171222;
+  --lilac: #dcc3e2;
+  --mono: "SF Mono", Menlo, monospace;
+  --display: Bricolage, Georgia, serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--ink); color: var(--cream); font: 32px/1.25 system-ui, sans-serif; }
+h1, h2, p, pre { margin: 0; }
+pre { font-family: var(--mono); }
+#root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--ink); }
+.clip { position: absolute; inset: 0; }
+.set { position: absolute; inset: 118px 184px 102px; }
+
+.legend {
+  position: relative;
+  margin-top: 29px;
+  height: 80px;
+  font: 680 43px/1.08 var(--display);
+  letter-spacing: -.025em;
+}
+.workspace-label { position: absolute; left: 0; top: 12px; }
+.workspace-label:not(.label-code) { opacity: 0; }
+.workspace-label span { color: var(--lilac); margin-left: 16px; font-weight: 530; }
+.opening-branch { position: absolute; right: 0; top: 12px; color: var(--lilac); font-size: 39px; }
+.opening-branch code { margin-left: 8px; color: var(--cream); font: 36px/1 var(--mono); }
+.shortcut {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+}
+.shortcut span { color: var(--lilac); font-size: 39px; margin-right: 10px; }
+.shortcut kbd {
+  display: grid;
+  place-items: center;
+  width: 67px;
+  height: 66px;
+  border-radius: 11px;
+  border: 2px solid #9779a0;
+  background: #37263e;
+  color: var(--cream);
+  font: 620 44px/1 system-ui, sans-serif;
+  box-shadow: 0 5px 0 #1d1225;
+}
+
+.end-surface {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(ellipse at 43% 53%, #4b2a52, var(--plum) 62%);
+}
+.lockup { display: flex; align-items: center; gap: 58px; }
+.hare { border-radius: 53px; box-shadow: 0 24px 48px #140b23a0; }
+.lockup h1 { font: 770 150px/.93 var(--display); letter-spacing: -.04em; }
+.lockup p { margin-top: 20px; font-size: 40px; color: var(--lilac); }

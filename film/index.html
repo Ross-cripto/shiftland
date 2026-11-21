@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920, height=1080">
+  <title>Shiftland — One branch, three workspaces</title>
+  <link rel="stylesheet" href="film.css">
+  <link rel="stylesheet" href="desktop.css">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+</head>
+<body>
+  <main id="root" data-composition-id="shiftland" data-start="0" data-duration="20.5" data-width="1920" data-height="1080" data-fps="30">
+    <div id="workspace-switch" class="clip" data-composition-id="workspace-switch" data-composition-src="compositions/workspace-switch.html"
+      data-start="0" data-duration="18.3" data-track-index="0" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+    <div id="end-card" class="clip" data-composition-id="end-card" data-composition-src="compositions/end-card.html"
+      data-start="18" data-duration="2.5" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+    <audio id="music" class="clip" src="assets/audio/dimly-lit.mp3" data-label="Dimly lit · iamoneabe"
+      data-timeline-role="music" data-start="0" data-duration="20.5" data-track-index="2" data-track-kind="audio"></audio>
+  </main>
+  <script>
+    window.__timelines = window.__timelines || {};
+    window.__timelines.shiftland = gsap.timeline({ paused: true });
+  </script>
+</body>
+</html>
