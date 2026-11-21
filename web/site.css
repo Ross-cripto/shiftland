@@ -105,7 +105,10 @@ p { margin: 0; }
 
 .build-section { background: #eee2ef; border-block: 1px solid #e1d1e4; padding-block: clamp(3.75rem, 7.5vw, 6.6rem); }
 .build-grid { display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); align-items: center; gap: clamp(2rem, 6.5vw, 6.3rem); }
-.build-copy > a { display: inline-block; margin-top: 1.15rem; }
+.build-copy p + p { margin-top: .85rem; }
+.build-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .9rem 1.35rem; margin-top: 1.6rem; }
+.build-actions .action { color: var(--cream); background: var(--plum); }
+.build-actions .action:hover { background: #3e2748; }
 .terminal { border-radius: .75rem; min-width: 0; background: var(--plum); color: var(--cream); border: 1px solid #4b3354; overflow: hidden; }
 .terminal-top { display: flex; min-height: 3.2rem; justify-content: space-between; align-items: center; gap: .6rem; border-bottom: 1px solid #51365c; padding: .25rem .85rem .25rem 1.15rem; font-size: .88rem; color: #f2dff4; }
 .copy { color: inherit; padding: .3rem .58rem; min-height: 2.4rem; border: 1px solid #765882; border-radius: .32rem; background: #3e2748; cursor: pointer; }

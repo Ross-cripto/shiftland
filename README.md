@@ -10,7 +10,7 @@ Shiftland is a native workspace bar for macOS. See which apps are open in each s
 
 Download `Shiftland.dmg` from the [latest release](https://github.com/Ross-cripto/shiftland/releases/latest), open it, and drag Shiftland to Applications. Shiftland runs on macOS 15 or later on Apple silicon and Intel Macs. Install [OmniWM](https://github.com/OmniNull/OmniWM) and enable IPC in its menu before you open Shiftland.
 
-If the release notes say the build isn't notarized, macOS blocks Shiftland the first time you open it. Open it once, then go to System Settings → Privacy & Security and click **Open Anyway**.
+Releases aren't notarized by Apple yet, so macOS blocks Shiftland the first time you open it. Open it once, then go to System Settings → Privacy & Security and click **Open Anyway**. You only need to do this once per version.
 
 ## Find the code
 
