@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shiftland — An OmniWM workspace bar for macOS</title>
+  <meta name="description" content="Switch OmniWM spaces, see what's open, and manage display and shortcut settings from a native macOS menu bar.">
+  <meta name="theme-color" content="#25132f">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Shiftland for macOS">
+  <meta property="og:description" content="Your OmniWM workspaces, displays, and shortcuts in one native macOS bar.">
+  <meta property="og:image" content="https://ross-cripto.github.io/shiftland/assets/shiftland.webp">
+  <link rel="canonical" href="https://ross-cripto.github.io/shiftland/">
+  <link rel="icon" href="assets/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="icon" href="assets/favicon.png" type="image/png" sizes="64x64">
+  <link rel="preload" href="assets/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="site.css">
+  <script defer src="site.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <header class="masthead" id="top">
+    <div class="shell site-header">
+      <a class="wordmark" href="#top">
+        <img src="assets/favicon.png" width="34" height="34" alt="">
+        Shiftland
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="#preview">Preview</a>
+        <a href="#build">Build</a>
+        <a href="https://github.com/Ross-cripto/shiftland" class="nav-repo">GitHub</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main" tabindex="-1">
+    <div class="masthead">
+      <section class="shell hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <h1 id="hero-title">Make room<br>for your work.</h1>
+          <p>See what's open, jump between spaces, and manage your OmniWM setup from a native macOS bar.</p>
+          <div class="hero-actions">
+            <a class="action" href="https://github.com/Ross-cripto/shiftland">View on GitHub</a>
+            <a class="text-link" href="#build">Build from source</a>
+          </div>
+          <p class="platform"><span>macOS</span><span>Powered by OmniWM</span><span>MIT License</span></p>
+        </div>
+        <div class="hero-art">
+          <img src="assets/shiftland.webp" width="512" height="512" alt="An ivory hare in mid-leap on an aubergine tile">
+        </div>
+      </section>
+    </div>
+      <section class="shell preview-section" id="preview" aria-labelledby="preview-title">
+        <div class="preview-copy">
+          <h2 id="preview-title">Your spaces,<br>at a glance.</h2>
+          <p>The bar follows your display and shows the apps in each workspace. Select a number to see an example of switching spaces.</p>
+        </div>
+        <figure class="demo" data-space="1">
+          <div class="demo-menu">
+            <div class="demo-controls" role="group" aria-label="Example workspaces">
+              <button type="button" data-space="1" data-first="Editor" data-second="Terminal" aria-pressed="true" aria-label="Workspace 1" disabled>1</button>
+              <button type="button" data-space="2" data-first="Browser" data-second="Reference" aria-pressed="false" aria-label="Workspace 2" disabled>2</button>
+              <button type="button" data-space="3" data-first="Notes" data-second="Calendar" aria-pressed="false" aria-label="Workspace 3" disabled>3</button>
+            </div>
+          </div>
+          <div class="demo-layout" aria-hidden="true">
+            <div class="demo-window">
+              <div class="window-title"><span></span><b data-first-title>Editor</b></div>
+              <div class="window-lines"><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="demo-window">
+              <div class="window-title"><span></span><b data-second-title>Terminal</b></div>
+              <div class="window-lines"><i></i><i></i><i></i></div>
+            </div>
+          </div>
+          <figcaption><span>Illustrated preview</span><span aria-live="polite" data-demo-status>Workspace 1 · Editor and Terminal</span></figcaption>
+        </figure>
+      </section>
+
+      <section class="shell details" aria-label="Features">
+        <article>
+          <h3>Know what's open</h3>
+          <p>Find spaces by number and app icon, and see which one is active.</p>
+        </article>
+        <article>
+          <h3>Work across displays</h3>
+          <p>Each display shows its own spaces. The MacBook bar fits next to the notch.</p>
+        </article>
+        <article>
+          <h3>Keep your setup yours</h3>
+          <p>Edit names, display assignments, and shortcuts. Shiftland backs up your OmniWM settings when you save.</p>
+        </article>
+      </section>
+
+      <section class="build-section" id="build" aria-labelledby="build-title">
+        <div class="shell build-grid">
+          <div class="build-copy">
+            <h2 id="build-title">Try it on your Mac.</h2>
+            <p>Build with Xcode's command-line tools. Install <a href="https://github.com/OmniNull/OmniWM">OmniWM</a> and enable IPC to connect the two apps.</p>
+            <p class="tested">Verified with macOS 15.5 and OmniWM 0.5.1.</p>
+            <a class="text-link" href="https://github.com/Ross-cripto/shiftland#build-from-source">Read the setup guide</a>
+          </div>
+          <div class="terminal">
+            <div class="terminal-top"><span>Terminal</span><button type="button" class="copy" hidden>Copy commands</button></div>
+            <pre><code id="install-commands">git clone https://github.com/Ross-cripto/shiftland.git
+cd shiftland
+./scripts/build-app.sh
+open -n ".build/Shiftland.app" --args --preview --settings</code></pre>
+            <span class="sr-only" aria-live="polite" data-copy-status></span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="shell site-footer">
+      <a class="wordmark" href="#top"><img src="assets/favicon.png" width="30" height="30" alt="">Shiftland</a>
+      <div class="footer-links">
+        <a href="https://github.com/Ross-cripto/shiftland">GitHub</a>
+        <a href="https://github.com/Ross-cripto/shiftland/issues">Issues</a>
+        <a href="https://github.com/Ross-cripto/shiftland/blob/main/LICENSE">MIT License</a>
+      </div>
+    </footer>
+</body>
+</html>
