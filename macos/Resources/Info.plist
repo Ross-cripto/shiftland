@@ -7,7 +7,7 @@
 	<key>CFBundleIconFile</key>
 	<string>AppIcon.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>local.workspacebar.app</string>
+	<string>io.github.ross-cripto.shiftland</string>
 	<key>CFBundleName</key>
 	<string>Shiftland</string>
 	<key>CFBundlePackageType</key>
