@@ -48,7 +48,7 @@ p { margin: 0; }
 
 .introduction { padding-block: clamp(2.75rem, 5vw, 5rem) clamp(2rem, 4vw, 3.8rem); }
 .hero { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, .8fr); align-items: end; gap: clamp(2rem, 5vw, 5rem); }
-.hero h1 { max-width: 10ch; font-weight: 780; font-size: clamp(3.5rem, 7.1vw, 6rem); text-wrap: wrap; }
+.hero h1 { max-width: 12ch; font-weight: 780; font-size: clamp(3.5rem, 7.1vw, 6rem); text-wrap: wrap; }
 .hero-copy p { color: #ebdced; font-size: clamp(1.05rem, 1.6vw, 1.25rem); max-width: 33ch; }
 .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .9rem 1.35rem; margin-top: 1.35rem; }
 .action { display: inline-flex; justify-content: center; align-items: center; min-height: 3rem; color: var(--plum); background: var(--cream); border-radius: .56rem; padding: .65rem 1.15rem; text-decoration: none; font-weight: 750; transition: background-color .16s ease, transform .16s ease; }
@@ -105,7 +105,6 @@ p { margin: 0; }
 
 .build-section { background: #eee2ef; border-block: 1px solid #e1d1e4; padding-block: clamp(3.75rem, 7.5vw, 6.6rem); }
 .build-grid { display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); align-items: center; gap: clamp(2rem, 6.5vw, 6.3rem); }
-.build-copy p + p { margin-top: .85rem; }
 .build-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .9rem 1.35rem; margin-top: 1.6rem; }
 .build-actions .action { color: var(--cream); background: var(--plum); }
 .build-actions .action:hover { background: #3e2748; }
@@ -116,6 +115,21 @@ p { margin: 0; }
 .copy:focus-visible { outline-color: #f0c4f3; }
 .terminal pre { font: .875rem/1.75 ui-monospace, Menlo, Consolas, monospace; overflow-x: auto; margin: 0; padding: 1rem 1.15rem 1.3rem; }
 .site-footer { display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 6rem; }
+
+.install-guide { max-width: 43rem; padding-block: clamp(2.75rem, 7vw, 5.5rem); }
+.install-guide h1 { font-size: clamp(2.65rem, 6vw, 4.35rem); }
+.install-guide h2 { font-size: clamp(1.8rem, 4vw, 2.55rem); }
+.install-guide p { margin-top: 1rem; color: var(--muted); }
+.install-guide .action { margin-top: 1.4rem; color: var(--cream); background: var(--plum); }
+.install-guide .action:hover { background: #3e2748; }
+.install-guide section { margin-top: 3rem; padding-top: 1.6rem; border-top: 1px solid var(--rule); }
+.install-guide dl { margin: 1.15rem 0 0; }
+.install-guide dl div + div { margin-top: 1.15rem; }
+.install-guide dt { font-weight: 730; }
+.install-guide dd { margin: .35rem 0 0; color: var(--muted); }
+.install-guide ol { padding-left: 1.35rem; color: var(--muted); }
+.install-guide li + li { margin-top: .55rem; }
+.install-guide section a { text-underline-offset: .17em; }
 
 @media (max-width: 880px) {
   .shell, .media-shell { width: min(100% - 3rem, 72rem); }

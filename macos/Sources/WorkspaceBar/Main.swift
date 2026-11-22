@@ -11,8 +11,14 @@ enum WorkspaceBarMain {
     @MainActor
     static func main() async {
         if CommandLine.arguments.contains("--diagnose") {
+            let device = MacSetupDevice.current
+            let installation = OmniInstallation.installed(for: device)
+            print("Mac: macOS \(device.macOS.label) · \(device.architecture.label)")
+            if let engine = installation.installation {
+                print("OmniWM: \(engine.version ?? "versión sin identificar")")
+            }
             do {
-                let client = try OmniClient.installed()
+                let client = try installation.client()
                 let snapshot = try await client.snapshot()
                 let draft = try SettingsStore.installed.load()
                 for monitor in snapshot.monitors {
@@ -42,16 +48,22 @@ enum WorkspaceBarMain {
 @MainActor
 private final class WorkspaceBarApplication: NSObject, NSApplicationDelegate {
     private static let retryDelay: Duration = .seconds(3)
+    private static let completedSetupKey = "didConnectToOmniWM"
+    private static let workspaceZeroNumber = 10
     private let preview: Bool
     private let icons = ApplicationIcons()
+    private let setup = WorkspaceSetupModel(device: .current)
     private var panels: [String: WorkspacePanel] = [:]
     private var statusItem: NSStatusItem?
     private var engineStatus: NSMenuItem?
     private var shortcutStatus: NSMenuItem?
     private var settingsWindow: NSWindow?
+    private var setupWindow: NSWindow?
     private var subscription: Task<Void, Never>?
+    private var connectedClient: OmniClient?
     private var snapshot: WorkspaceSnapshot?
     private var zeroShortcuts: WorkspaceZeroShortcuts?
+    private var hasShownSetup = false
 
     init(preview: Bool) {
         self.preview = preview
@@ -59,9 +71,9 @@ private final class WorkspaceBarApplication: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         installMenu()
-        if !preview { registerZeroShortcuts() }
         subscription = Task { await connect() }
         if CommandLine.arguments.contains("--settings") { showSettings() }
+        if CommandLine.arguments.contains("--setup") { showSetup() }
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -75,21 +87,53 @@ private final class WorkspaceBarApplication: NSObject, NSApplicationDelegate {
 
     private func connect() async {
         while !Task.isCancelled {
+            let installation = OmniInstallation.installed(for: setup.device)
             do {
-                let client = try OmniClient.installed()
+                let client = try installation.client()
+                let initial = try await client.snapshot()
+                try Task.checkCancellation()
+                connectedClient = client
+                accept(initial, from: installation.installation)
                 for try await updated in client.snapshots() {
-                    engineStatus?.title = "Conectado a OmniWM"
-                    guard snapshot != updated else { continue }
-                    snapshot = updated
-                    displaySnapshot()
+                    try Task.checkCancellation()
+                    accept(updated, from: installation.installation)
                 }
+                try Task.checkCancellation()
+                throw OmniError.disconnected
             } catch {
                 if Task.isCancelled { return }
                 engineStatus?.title = error.localizedDescription
+                connectedClient = nil
                 snapshot = nil
                 displaySnapshot()
+                updateSetup(.failed(error, installation: OmniInstallation.installed(for: setup.device)))
                 try? await Task.sleep(for: Self.retryDelay)
             }
+        }
+    }
+
+    private func accept(_ updated: WorkspaceSnapshot, from installation: OmniInstallation?) {
+        let hasWorkspaces = updated.monitors.contains { !$0.workspaces.isEmpty }
+        engineStatus?.title = hasWorkspaces ? "Conectado a OmniWM" : "OmniWM aún no muestra espacios"
+        updateSetup(SetupAssessment(hasWorkspaces ? .connected : .noWorkspaces, installation: installation))
+        guard snapshot != updated else { return }
+        snapshot = updated
+        displaySnapshot()
+    }
+
+    private func updateSetup(_ assessment: SetupAssessment) {
+        guard setup.assessment != assessment else { return }
+        setup.assessment = assessment
+        guard !preview else { return }
+
+        if assessment.step == .connected {
+            setup.openError = nil
+            UserDefaults.standard.set(true, forKey: Self.completedSetupKey)
+            if zeroShortcuts == nil { registerZeroShortcuts() }
+        } else if !hasShownSetup,
+                  !UserDefaults.standard.bool(forKey: Self.completedSetupKey),
+                  settingsWindow == nil {
+            showSetup()
         }
     }
 
@@ -119,9 +163,10 @@ private final class WorkspaceBarApplication: NSObject, NSApplicationDelegate {
     }
 
     private func run(_ arguments: [String]) {
+        guard let client = connectedClient else { return }
         Task {
             do {
-                try await OmniClient.installed().command(arguments)
+                try await client.command(arguments)
             } catch {
                 engineStatus?.title = error.localizedDescription
             }
@@ -145,6 +190,9 @@ private final class WorkspaceBarApplication: NSObject, NSApplicationDelegate {
         let settings = NSMenuItem(title: "Ajustes…", action: #selector(showSettings), keyEquivalent: ",")
         settings.target = self
         menu.addItem(settings)
+        let setup = NSMenuItem(title: "Configurar conexión…", action: #selector(showSetup), keyEquivalent: "")
+        setup.target = self
+        menu.addItem(setup)
         let about = NSMenuItem(title: "Acerca de \(AppBrand.name)", action: #selector(showAbout), keyEquivalent: "")
         about.target = self
         menu.addItem(about)
@@ -159,6 +207,50 @@ private final class WorkspaceBarApplication: NSObject, NSApplicationDelegate {
     @objc private func showAbout() {
         NSApplication.shared.activate()
         NSApplication.shared.orderFrontStandardAboutPanel(nil)
+    }
+
+    @objc private func showSetup() {
+        hasShownSetup = true
+        let window: NSWindow
+        if let setupWindow {
+            window = setupWindow
+        } else {
+            window = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 490, height: 290),
+                styleMask: [.titled, .closable],
+                backing: .buffered,
+                defer: false
+            )
+            window.title = "Configurar \(AppBrand.name)"
+            window.isReleasedWhenClosed = false
+            window.contentView = NSHostingView(rootView: WorkspaceSetupView(
+                model: setup,
+                recheck: { [weak self] in self?.recheckSetup() },
+                openEngine: { [weak self] in self?.openEngine() },
+                openSettings: { [weak self] in self?.showSettings() }
+            ))
+            window.center()
+            setupWindow = window
+        }
+        NSApplication.shared.activate()
+        window.makeKeyAndOrderFront(nil)
+    }
+
+    private func recheckSetup() {
+        setup.openError = nil
+        setup.assessment = SetupAssessment(.checking, installation: setup.assessment.installation)
+        subscription?.cancel()
+        subscription = Task { await connect() }
+    }
+
+    private func openEngine() {
+        guard let installation = setup.assessment.installation else { return }
+        setup.openError = nil
+        guard NSWorkspace.shared.open(installation.bundleURL) else {
+            setup.openError = "No se pudo abrir OmniWM. Prueba a abrirlo desde Finder."
+            return
+        }
+        if setup.assessment.step != .connected { recheckSetup() }
     }
 
     @objc private func showSettings() {
@@ -187,9 +279,9 @@ private final class WorkspaceBarApplication: NSObject, NSApplicationDelegate {
         let shortcuts = WorkspaceZeroShortcuts { [weak self] move in
             guard let self else { return }
             let spaces = snapshot?.monitors.flatMap(\.workspaces) ?? []
-            guard let zero = spaces.first(where: { $0.number == 10 }) else { return }
+            guard let zero = spaces.first(where: { $0.number == Self.workspaceZeroNumber }) else { return }
             if move {
-                run(["command", "move-to-workspace", String(zero.number)])
+                run(["command", "move-to-workspace", String(Self.workspaceZeroNumber)])
             } else {
                 run(["workspace", "focus-name", zero.rawName])
             }
@@ -197,6 +289,7 @@ private final class WorkspaceBarApplication: NSObject, NSApplicationDelegate {
         do {
             try shortcuts.start()
             zeroShortcuts = shortcuts
+            shortcutStatus?.isHidden = true
         } catch {
             shortcutStatus?.title = error.localizedDescription
             shortcutStatus?.isHidden = false

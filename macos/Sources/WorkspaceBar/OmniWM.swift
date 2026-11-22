@@ -11,7 +11,7 @@ struct WorkspaceMonitor: Decodable, Equatable, Sendable, Identifiable {
     let workspaces: [WorkspaceSlot]
 
     var orderedWorkspaces: [WorkspaceSlot] {
-        workspaces.sorted { $0.number < $1.number }
+        workspaces.sorted { ($0.number ?? Int.max) < ($1.number ?? Int.max) }
     }
 }
 
@@ -20,17 +20,18 @@ struct WorkspaceSlot: Decodable, Equatable, Sendable, Identifiable {
         let appName: String
     }
 
-    let number: Int
+    let number: Int?
     let displayName: String?
     let rawName: String
     let isFocused: Bool
     let windows: [Window]
 
-    var id: Int { number }
+    var id: String { rawName }
 
     var label: String {
         if let displayName, !displayName.isEmpty { return displayName }
-        return String(number)
+        if let number { return String(number) }
+        return rawName
     }
 
     var applicationNames: [String] {
@@ -64,6 +65,8 @@ struct OmniEnvelope: Decodable {
 
 enum OmniError: LocalizedError {
     case missingEngine
+    case missingCLI
+    case incompatibleEngine(String)
     case disconnected
     case refused(String)
     case invalidFrames
@@ -71,6 +74,8 @@ enum OmniError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .missingEngine: return "OmniWM.app no está instalado."
+        case .missingCLI: return "La instalación de OmniWM está incompleta."
+        case .incompatibleEngine(let message): return message
         case .disconnected: return "OmniWM no responde. Comprueba que está abierto y que IPC está activo."
         case .refused(let status): return "OmniWM rechazó el comando (\(status))."
         case .invalidFrames: return "OmniWM envió una respuesta que la barra no pudo leer."
@@ -125,22 +130,8 @@ struct JSONFrames {
 }
 
 struct OmniClient: Sendable {
+    private static let snapshotTimeout: Duration = .seconds(3)
     let executable: URL
-
-    static func installed() throws -> OmniClient {
-        let applicationPaths = [
-            "/Applications/OmniWM.app",
-            FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Applications/OmniWM.app").path
-        ]
-        for applicationPath in applicationPaths {
-            let executable = URL(fileURLWithPath: applicationPath)
-                .appendingPathComponent("Contents/MacOS/omniwmctl")
-            if FileManager.default.isExecutableFile(atPath: executable.path) {
-                return OmniClient(executable: executable)
-            }
-        }
-        throw OmniError.missingEngine
-    }
 
     func snapshots() -> AsyncThrowingStream<WorkspaceSnapshot, Error> {
         AsyncThrowingStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
@@ -169,9 +160,20 @@ struct OmniClient: Sendable {
     }
 
     func snapshot() async throws -> WorkspaceSnapshot {
-        let response = try await request(["query", "workspace-bar"])
-        guard let snapshot = response.result?.payload?.snapshot else { throw OmniError.invalidFrames }
-        return snapshot
+        try await withThrowingTaskGroup(of: WorkspaceSnapshot.self) { group in
+            group.addTask {
+                let response = try await request(["query", "workspace-bar"])
+                guard let snapshot = response.result?.payload?.snapshot else { throw OmniError.invalidFrames }
+                return snapshot
+            }
+            group.addTask {
+                try await Task.sleep(for: Self.snapshotTimeout)
+                throw OmniError.disconnected
+            }
+            defer { group.cancelAll() }
+            guard let snapshot = try await group.next() else { throw OmniError.disconnected }
+            return snapshot
+        }
     }
 
     private func request(_ arguments: [String]) async throws -> OmniEnvelope {
@@ -185,7 +187,12 @@ struct OmniClient: Sendable {
     }
 
     private static func response(_ data: Data) throws -> OmniEnvelope {
-        let response = try JSONDecoder().decode(OmniEnvelope.self, from: data)
+        let response: OmniEnvelope
+        do {
+            response = try JSONDecoder().decode(OmniEnvelope.self, from: data)
+        } catch is DecodingError {
+            throw OmniError.invalidFrames
+        }
         if response.ok || response.status == "no_change" { return response }
         throw OmniError.refused(response.status ?? "IPC")
     }

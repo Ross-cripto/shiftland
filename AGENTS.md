@@ -8,6 +8,7 @@ Shiftland is a native workspace bar and settings app for macOS. This repository 
 | --- | --- |
 | Workspace tiles, app icons, and their position on each display | [macos/Sources/WorkspaceBar/WorkspacePanel.swift](macos/Sources/WorkspaceBar/WorkspacePanel.swift) |
 | App startup, status menu, display updates, or IPC reconnection | [macos/Sources/WorkspaceBar/Main.swift](macos/Sources/WorkspaceBar/Main.swift) |
+| First-launch checks and OmniWM version selection | [SetupCompatibility.swift](macos/Sources/WorkspaceBar/SetupCompatibility.swift) and [WorkspaceSetupView.swift](macos/Sources/WorkspaceBar/WorkspaceSetupView.swift) |
 | OmniWM event decoding or commands | [macos/Sources/WorkspaceBar/OmniWM.swift](macos/Sources/WorkspaceBar/OmniWM.swift) |
 | The settings window or how edits are saved to OmniWM | [WorkspaceSettingsView.swift](macos/Sources/WorkspaceBar/WorkspaceSettingsView.swift) and [SettingsStore.swift](macos/Sources/WorkspaceBar/SettingsStore.swift) |
 | The app's artwork or menu bar glyph | [macos/Resources/Brand/](macos/Resources/Brand/) and [ShiftlandStatusIcon.swift](macos/Sources/WorkspaceBar/ShiftlandStatusIcon.swift) |
@@ -32,7 +33,7 @@ open -n "$PWD/.build/Shiftland.app" --args --preview --settings
 
 `scripts/build-app.sh` calls the macOS build script and writes the bundle to `.build/Shiftland.app`. The `SHIFTLAND_*` variables documented at the top of that script switch it to a universal release build with a version and a Developer ID signature. `scripts/package-app.sh` turns the bundle into the DMG, zip, and checksums that a release publishes, and notarizes them when given an App Store Connect API key. Merging a new `CFBundleShortVersionString` into `main`, or pushing a `v*` tag, runs both in GitHub Actions and publishes the release. Preview runs alongside the installed bar with saving and workspace-zero shortcut registration disabled. Use the preview for visual work. Test settings changes on a temporary configuration file. `SettingsStore` owns the backup and stale-file checks around edits to `settings.toml`.
 
-The installed OmniWM and its enabled IPC are needed for a live check. Run `".build/Shiftland.app/Contents/MacOS/Shiftland" --diagnose` to check the connection and display assignments.
+The installed OmniWM and its enabled IPC are needed for a live check. Run `".build/Shiftland.app/Contents/MacOS/Shiftland" --diagnose` to check the connection and display assignments. Open the setup window with `--preview --setup` to check its device details alongside the installed app.
 
 ## Website
 

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Install Shiftland on macOS — Download and compatibility</title>
+  <meta name="description" content="Download Shiftland, choose an OmniWM release for your Mac, and connect the workspace bar. Includes macOS Sequoia, Tahoe, Apple Silicon, and Intel guidance.">
+  <meta name="theme-color" content="#25132f">
+  <link rel="canonical" href="https://ross-cripto.github.io/shiftland/install/">
+  <link rel="icon" href="../assets/favicon.png" type="image/png" sizes="64x64">
+  <link rel="stylesheet" href="../site.css">
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <header class="masthead">
+    <div class="shell site-header">
+      <a class="wordmark" href="../">
+        <img src="../assets/favicon.png" width="34" height="34" alt="">
+        Shiftland
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="../#preview">Demo</a>
+        <a href="./" aria-current="page">Install</a>
+        <a href="https://github.com/Ross-cripto/shiftland" class="nav-repo">GitHub</a>
+      </nav>
+    </div>
+  </header>
+  <main class="shell install-guide" id="main" tabindex="-1">
+    <h1>Install Shiftland on macOS</h1>
+    <p>Shiftland runs on Apple Silicon and Intel Macs with macOS 15 or later. It checks your Mac when you open it and guides you through connecting the workspace bar.</p>
+    <a class="action" href="https://github.com/Ross-cripto/shiftland/releases/latest/download/Shiftland.dmg">Download Shiftland</a>
+
+    <section aria-labelledby="first-launch">
+      <h2 id="first-launch">Open Shiftland for the first time</h2>
+      <ol>
+        <li>Open the disk image, then drag Shiftland to Applications.</li>
+        <li>Open Shiftland from Applications. The current release is signed ad hoc. If macOS blocks it because it lacks Apple notarization, open <strong>System Settings → Privacy &amp; Security</strong>, click <strong>Open Anyway</strong> for Shiftland, and confirm.</li>
+        <li>Follow the connection window. If it asks for OmniWM, install the recommended version, grant its requested permissions, and enable IPC in its settings.</li>
+        <li>When the bar appears, click a workspace to switch to it. If you have a workspace labeled <strong>0</strong>, press <kbd>⌥</kbd><kbd>0</kbd> to jump to it.</li>
+      </ol>
+      <p>See <a href="https://support.apple.com/en-us/102445">Apple’s first-launch instructions</a> for help with macOS approval.</p>
+    </section>
+
+    <section aria-labelledby="compatibility">
+      <h2 id="compatibility">Which OmniWM version works with my Mac?</h2>
+      <p>To check your macOS version and chip or processor, choose <strong>About This Mac</strong> from the Apple menu.</p>
+      <dl>
+        <div>
+          <dt>Apple Silicon with macOS 26 or later</dt>
+          <dd>These systems meet the requirements of the <a href="https://omniwm.app/guides/install/">current OmniWM release</a>.</dd>
+        </div>
+        <div>
+          <dt>Apple Silicon with macOS 15, or Intel with macOS 15 or later</dt>
+          <dd>The <a href="https://github.com/OmniNull/OmniWM/releases/tag/v0.5.1">OmniWM 0.5.1 download</a> includes both architectures and requires macOS 15 or later. Shiftland has been tested with OmniWM 0.5.1 on an Apple Silicon Mac running macOS 15.5.</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section aria-labelledby="troubleshooting">
+      <h2 id="troubleshooting">If the bar is missing</h2>
+      <p>Check that OmniWM is open and that IPC is enabled. Confirm that <strong>Displays have separate Spaces</strong> is enabled in System Settings under Desktop &amp; Dock. If Shiftland shows a connection window, follow the step it recommends for this Mac.</p>
+    </section>
+  </main>
+  <footer class="shell site-footer">
+    <a class="wordmark" href="../"><img src="../assets/favicon.png" width="30" height="30" alt="">Shiftland</a>
+    <div class="footer-links">
+      <a href="https://github.com/Ross-cripto/shiftland">GitHub</a>
+      <a href="https://github.com/Ross-cripto/shiftland/issues">Issues</a>
+    </div>
+  </footer>
+</body>
+</html>

@@ -34,6 +34,18 @@ final class WorkspaceBarTests: XCTestCase {
         XCTAssertEqual(workspaces[1].applicationNames, ["Finder", "Zed"])
     }
 
+    func testProjectionAcceptsNamedWorkspacesWithoutNumbers() throws {
+        let data = Data("""
+        {"id":"work","number":null,"rawName":"work","displayName":"Work","isFocused":true,
+         "windows":[{"appName":"Terminal","bundleId":"com.apple.Terminal","allWindows":[]}]}
+        """.utf8)
+        let workspace = try JSONDecoder().decode(WorkspaceSlot.self, from: data)
+        XCTAssertNil(workspace.number)
+        XCTAssertEqual(workspace.id, "work")
+        XCTAssertEqual(workspace.label, "Work")
+        XCTAssertEqual(workspace.applicationNames, ["Terminal"])
+    }
+
     func testEditingPreservesUnrelatedContentAndBacksUpOriginal() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

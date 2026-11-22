@@ -222,16 +222,13 @@ jobs:
             echo "## Install"
             echo
             echo "1. Download **Shiftland.dmg**, open it, and drag Shiftland to Applications."
-            echo "2. Install [OmniWM](https://github.com/OmniNull/OmniWM) and turn on IPC in its menu."
-            echo "3. Open Shiftland."
-            echo
-            echo "Shiftland needs macOS 15 or later and runs on Apple silicon and Intel Macs."
+            echo "2. Open Shiftland from Applications. Follow the connection window to install a compatible version of OmniWM or enable IPC."
+            echo "3. Click a workspace in the menu bar to switch to it. See the [installation and compatibility guide](https://ross-cripto.github.io/shiftland/install/) for help."
             if [[ "$NOTARIZED" != true ]]; then
               echo
               echo "> [!IMPORTANT]"
-              echo "> This build is not notarized by Apple, so macOS blocks it the first time you open it."
-              echo "> Open Shiftland once, then go to **System Settings → Privacy & Security** and click **Open Anyway**."
-              echo "> You can also run \`xattr -dr com.apple.quarantine /Applications/Shiftland.app\` in Terminal."
+              echo "> This build is signed ad hoc. If macOS blocks the first launch, go to **System Settings → Privacy & Security**, click **Open Anyway** for Shiftland, and confirm."
+              echo "> See [Apple's first-launch instructions](https://support.apple.com/en-us/102445) for details."
             fi
             echo
             echo "## Verify the download"
